@@ -94,13 +94,44 @@ public class ImageProcessor extends FunctioalForEachLoops {
 	}
 	
 	public BufferedImage greyscale() {
-		// TODO: Implement this method, remove the exception.
-		throw new UnimplementedMethodException("greyscale");
+		logger.log("Preparing for greyscale changing...");
+
+		int r = rgbWeights.redWeight;
+		int g = rgbWeights.greenWeight;
+		int b = rgbWeights.blueWeight;
+
+		BufferedImage ans = newEmptyInputSizedImage();
+
+		forEach((y, x) -> {
+			Color c = new Color(workingImage.getRGB(x, y));
+			int red = r * c.getRed();
+			int green = g * c.getGreen();
+			int blue = b * c.getBlue();
+			int weightsSum = r + g + b;
+			int greyColor = (red + green + blue) / weightsSum;
+			Color color = new Color(greyColor, greyColor, greyColor);
+			ans.setRGB(x, y, color.getRGB());
+		});
+
+		logger.log("Changing to greyScale done!");
+
+		return ans;
 	}
 
 	public BufferedImage nearestNeighbor() {
-		// TODO: Implement this method, remove the exception.
-		throw new UnimplementedMethodException("nearestNeighbor");
+		logger.log("Preparing for resizing using nearest neighbor...");
+
+		BufferedImage ans = newEmptyOutputSizedImage();
+		this.setForEachParameters(this.outWidth, this.outHeight);
+		forEach((y, x) -> {
+			int originalImageX = Math.min(Math.round(x *  this.inWidth / this.outWidth), this.inWidth - 1);
+			int originalImageY = Math.min(Math.round(y * this.inHeight / this.outHeight), this.inHeight- 1);
+			int color = this.workingImage.getRGB(originalImageX, originalImageY);
+			ans.setRGB(x, y, color);
+		});
+		logger.log("resizing image using nearest neighbor done!");
+
+		return ans;
 	}
 
 }
