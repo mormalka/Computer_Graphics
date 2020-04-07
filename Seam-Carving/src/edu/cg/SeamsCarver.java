@@ -153,13 +153,20 @@ public class SeamsCarver extends ImageProcessor {
 	}
 
 	public long findMinNeighbor(int y, int x){
-
-		long C_up = calc_c_up(x,y);
+//		long C_up = calc_c_up(x,y);
 
 		// TODO - the order of x and y
-		long neighborUp = this.costMatrix[y - 1][x] + C_up;
+//		long neighborUp = this.costMatrix[y - 1][x] + C_up;
+		long neighborUp = Long.MAX_VALUE; // MAX?
+		long C_up = 255; // TODO ??
 		long neighborLeft = Long.MAX_VALUE;
 		long neighborRight = Long.MAX_VALUE;
+
+		// NEW
+		if (x > 0 && ((x + 1) < this.currentWidth)){
+			C_up = calc_c_up(x,y);
+			neighborUp = this.costMatrix[y - 1][x] + C_up;
+		}
 
 		if (x > 0){
 			int C_left = calc_c_left(x,y);
@@ -193,17 +200,22 @@ public class SeamsCarver extends ImageProcessor {
 
 
 		for (int y = inHeight - 1; y > 0; y--){
-			long c_up = calc_c_up(x,y);
+//			long c_up = calc_c_up(x,y);
+			long c_up = 255; // NEW!!!!!!!! NOT SURE ABOUT THE VALUE
 			long c_left;
+
+			if (x > 0 && ((x + 1) < this.currentWidth)){ // NEW
+				c_up = calc_c_up(x,y);
+			}
 
 			if (x > 0) {
 				c_left = calc_c_left(x, y);
-			}else { c_left  = -1;}
+			} else { c_left  = -1;}
 
 			if(this.costMatrix[y][x] == (this.energyMatrix[y][x] + this.costMatrix[y-1][x] + c_up)) {  // not finished
 				//do nothing - (x = x)
-			}else if (this.costMatrix[y][x] == (this.energyMatrix[y][x] + this.costMatrix[y-1][x-1] + c_left)){
-						x = x-1;
+			} else if (this.costMatrix[y][x] == (this.energyMatrix[y][x] + this.costMatrix[y-1][x-1] + c_left)){
+				x = x-1;
 			}else {
 				x = x + 1;
 			}
@@ -214,5 +226,14 @@ public class SeamsCarver extends ImageProcessor {
 
 		}
 		return bestSeamIndexes;
+	}
+
+	// TODO : i adi added
+	public void removeBestSeam(){
+		int minXIndex = this.findMinCostInCostMatrix();
+		int [][] currentBestSeam = backtrackTheBestSeam(minXIndex);
+
+		// remove it and save it's values
+
 	}
 }
