@@ -131,26 +131,43 @@ public class SeamsCarver extends ImageProcessor {
 		});
 	}
 
-	public long findMinNeighbor(int y, int x){
+	public int calc_c_up(int x,int y){
 		int p1 = new Color(this.greyScaleImage.getRGB(x + 1, y)).getBlue();
 		int p2 = new Color(this.greyScaleImage.getRGB(x - 1, y)).getBlue();
-		long C_up = Math.abs(p1 - p2);
+
+		return Math.abs(p1 - p2);
+	}
+
+	public int calc_c_left(int x,int y){
+		int p1 = new Color(this.greyScaleImage.getRGB(x, y - 1)).getBlue();
+		int p2 = new Color(this.greyScaleImage.getRGB(x - 1, y)).getBlue();
+
+		return Math.abs(p1 - p2);
+	}
+
+	public int calc_c_right(int x,int y){
+		int p1 = new Color(this.greyScaleImage.getRGB(x, y - 1)).getBlue();
+		int p2 = new Color(this.greyScaleImage.getRGB(x + 1, y)).getBlue();
+
+		return Math.abs(p1 - p2);
+	}
+
+	public long findMinNeighbor(int y, int x){
+
+		long C_up = calc_c_up(x,y);
 
 		// TODO - the order of x and y
 		long neighborUp = this.costMatrix[y - 1][x] + C_up;
 		long neighborLeft = Long.MAX_VALUE;
 		long neighborRight = Long.MAX_VALUE;
 
-
 		if (x > 0){
-			p1 = new Color(this.greyScaleImage.getRGB(x, y - 1)).getBlue();
-			p2 = new Color(this.greyScaleImage.getRGB(x - 1, y)).getBlue();
-			neighborLeft = this.costMatrix[y - 1][x - 1] + (C_up + Math.abs(p1 - p2));
+			int C_left = calc_c_left(x,y);
+			neighborLeft = this.costMatrix[y - 1][x - 1] + (C_up + C_left);
 		}
 		if (x + 1 < this.currentWidth) {
-			p1 = new Color(this.greyScaleImage.getRGB(x, y - 1)).getBlue();
-			p2 = new Color(this.greyScaleImage.getRGB(x + 1, y)).getBlue();
-			neighborRight = this.costMatrix[y - 1][x + 1] + (C_up + Math.abs(p1 - p2));
+			int C_right = calc_c_right(x,y);
+			neighborRight = this.costMatrix[y - 1][x + 1] + (C_up + C_right);
 		}
 
 		return Math.min(neighborUp , Math.min(neighborLeft, neighborRight));
@@ -168,13 +185,34 @@ public class SeamsCarver extends ImageProcessor {
 		return minXIndex;
 	}
 
-//	public int[][] backtrackTheBestSeam(int startXIndex){
-//		int [][] bestSeamIndexes = new int[this.inHeight][2]; // store all indexes of the seam
-//		int [] currentIndexes = {this.inHeight - 1, startXIndex};
-//		bestSeamIndexes[0] = currentIndexes;
-//		int x = startXIndex;
-//		for (int y = inHeight - 1; y > 0; y--){
-//			if(this.costMatrix[y][x] == this.energyMatrix[y][x] + this.costMatrix); // not finished
-//		}
-//	}
+	public int[][] backtrackTheBestSeam(int startXIndex){
+		int [][] bestSeamIndexes = new int[this.inHeight][2]; // store all indexes of the seam
+		int [] currentIndexes = {this.inHeight - 1, startXIndex};
+		bestSeamIndexes[this.inHeight - 1] = currentIndexes;
+		int x = startXIndex;
+
+
+		for (int y = inHeight - 1; y > 0; y--){
+			long c_up = calc_c_up(x,y);
+			long c_left;
+
+			if (x > 0) {
+				c_left = calc_c_left(x, y);
+			}else { c_left  = -1;}
+
+			if(this.costMatrix[y][x] == (this.energyMatrix[y][x] + this.costMatrix[y-1][x] + c_up)) {  // not finished
+				//do nothing - (x = x)
+			}else if (this.costMatrix[y][x] == (this.energyMatrix[y][x] + this.costMatrix[y-1][x-1] + c_left)){
+						x = x-1;
+			}else {
+				x = x + 1;
+			}
+
+			currentIndexes[0] = y + 1;
+			currentIndexes[1] = x;
+			bestSeamIndexes[y] = currentIndexes;
+
+		}
+		return bestSeamIndexes;
+	}
 }
