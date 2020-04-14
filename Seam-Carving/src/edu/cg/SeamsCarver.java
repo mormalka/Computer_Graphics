@@ -20,7 +20,9 @@ public class SeamsCarver extends ImageProcessor {
 	BufferedImage greyScaleImage;
 	long [][] costMatrix;
 	int currentWidth;
-	int [][] seamsIndexes;
+	int [][] bestSeamsIndexesMatrix;
+	int removedSeamCounter;
+	boolean[][] originalMask;
 
 	public SeamsCarver(Logger logger, BufferedImage workingImage, int outWidth, RGBWeights rgbWeights,
 			boolean[][] imageMask) {
@@ -48,7 +50,9 @@ public class SeamsCarver extends ImageProcessor {
 		this.logger.log("starts calculations");
 		this.currentWidth = inWidth;
 		this.greyScaleImage = this.greyscale();
-		this.seamsIndexes = new int[this.numOfSeams][this.inHeight]; // NEW
+		this.removedSeamCounter = 0;
+		this.bestSeamsIndexesMatrix = new int[this.numOfSeams][this.inHeight];
+		this.originalMask = imageMask;
 		this.calculateEnergyMatrix();
 		this.calculateCostMatrix();
 
@@ -71,8 +75,17 @@ public class SeamsCarver extends ImageProcessor {
 	}
 
 	private BufferedImage increaseImageWidth() {
-		// TODO: Implement this method, remove the exception.
-		throw new UnimplementedMethodException("increaseImageWidth");
+		System.out.println("start increaseImageWidth");
+
+		reduceImageWidth(); // finding the best k seams and store them in matrix
+		System.out.println("after reduce");
+		BufferedImage increasedImage = this.workingImage;
+		this.imageMask = createCopyOfOriginalMask();
+		for (int i = 0; i < this.numOfSeams; i++ ){
+			increasedImage = duplicateBestSeam(increasedImage, i);
+		}
+
+		return increasedImage;
 	}
 
 	public BufferedImage showSeams(int seamColorRGB) {
@@ -144,6 +157,17 @@ public class SeamsCarver extends ImageProcessor {
 		this.popForEachParameters();
 	}
 
+	public boolean[][] createCopyOfOriginalMask(){
+		System.out.println("create mask copy");
+		boolean[][] maskCopy = new boolean[this.originalMask.length][this.originalMask[0].length];
+		for(int i = 0; i < this.originalMask.length; i++){
+			for(int j = 0; j < this.originalMask[0].length; j++){
+				maskCopy[i][j] = this.originalMask[i][j];
+			}
+		}
+		return maskCopy;
+	}
+
 	public int calc_c_up(int x,int y){
 		int p1 = new Color(this.greyScaleImage.getRGB(x + 1, y)).getBlue();
 		int p2 = new Color(this.greyScaleImage.getRGB(x - 1, y)).getBlue();
@@ -209,11 +233,8 @@ public class SeamsCarver extends ImageProcessor {
 		bestSeamIndexes[this.inHeight - 1] = startXIndex; // first indexes store in the last position in the array
 		int x = startXIndex;
 
-		System.out.println("width: " + currentWidth);
-		System.out.println("start index: " + startXIndex);
-
 		for (int y = inHeight - 1; y > 0; y--){
-			long c_up = 0; // NEW!!!!!!!! NOT SURE ABOUT THE VALUE
+			long c_up = 0;
 			long c_left;
 			long neighbourLeft = -1;
 
@@ -228,13 +249,10 @@ public class SeamsCarver extends ImageProcessor {
 
 			// inverted formula
 			if(this.costMatrix[y][x] == (this.energyMatrix[y][x] + this.costMatrix[y-1][x] + c_up)) {
-				System.out.println("cond 1");
 				//do nothing - (x = x)
 			} else if (this.costMatrix[y][x] == (this.energyMatrix[y][x] + neighbourLeft)){
-				System.out.println("cond 2");
 				x = x - 1;
 			}else {
-				System.out.println("cond 3");
 				x = x + 1;
 			}
 
@@ -242,6 +260,52 @@ public class SeamsCarver extends ImageProcessor {
 
 		}
 		return bestSeamIndexes;
+	}
+
+	public BufferedImage duplicateBestSeam(BufferedImage currentColorImage, int bestSeamIndexLocation) {
+		int newWidth = currentColorImage.getWidth() + 1;
+		BufferedImage newImage = new BufferedImage(newWidth, this.inHeight, this.workingImageType);
+		boolean[][] newImageMask = new boolean[this.inHeight][newWidth];
+		int[] currentSeam =  bestSeamsIndexesMatrix[bestSeamIndexLocation];
+
+		System.out.println("start X: " + currentSeam[currentSeam.length - 1] + " count: " + bestSeamIndexLocation);
+
+		for (int y = 0; y < this.inHeight; y++){
+			int currentXIndex = currentSeam[y]; // the x index for the current row
+			for (int x = 0; x < currentColorImage.getWidth(); x++){
+				if (x < currentXIndex){ // pixels stays the same
+					newImage.setRGB(x, y, currentColorImage.getRGB(x, y));
+					newImageMask[y][x] = this.imageMask[y][x];
+				} else if (x == currentXIndex){ // pixel duplication
+					newImage.setRGB(x, y, currentColorImage.getRGB(x, y));
+					newImageMask[y][x] = this.imageMask[y][x];
+
+					newImage.setRGB(x + 1, y, currentColorImage.getRGB(x, y)); // shift right the same value
+					newImageMask[y][x + 1] = this.imageMask[y][x];
+
+				} else if (x > currentXIndex){ // shift one pixel right
+					currentColorImage.getRGB(x, y);
+					newImage.setRGB((x + 1), y, currentColorImage.getRGB(x, y));
+					newImageMask[y][x + 1] = this.imageMask[y][x];
+				}
+			}
+		}
+
+		// update fields with new values after adding seam
+		this.currentWidth = this.currentWidth + 1;
+		this.imageMask = newImageMask;
+		this.updateBestSeamsIndexesMatrix(bestSeamIndexLocation);
+
+		return newImage;
+	}
+
+	public void updateBestSeamsIndexesMatrix(int bestSeamIndexLocation){
+		// increase the index for each seam so they will match the original image
+		for(int i = bestSeamIndexLocation + 1; i < this.bestSeamsIndexesMatrix.length; i++){
+			for(int j = 0; j < this.bestSeamsIndexesMatrix[0].length; j++){
+				this.bestSeamsIndexesMatrix[i][j]++;
+			}
+		}
 	}
 
 	/*
@@ -254,6 +318,8 @@ public class SeamsCarver extends ImageProcessor {
 	public BufferedImage removeBestSeam(BufferedImage currentColorImage){
 		int minXIndex = this.findMinCostInCostMatrix();
 		int [] currentBestSeam = backtrackTheBestSeam(minXIndex);
+
+		this.bestSeamsIndexesMatrix[this.removedSeamCounter] = currentBestSeam; // NEW
 
 		// remove it and save it's values
 		int newWidth = this.currentWidth - 1;
@@ -280,6 +346,7 @@ public class SeamsCarver extends ImageProcessor {
 		this.currentWidth = this.currentWidth - 1;
 		this.greyScaleImage = newGreyImage;
 		this.imageMask = newImageMask;
+		this.removedSeamCounter++;
 
 		return newImage;
 	}
