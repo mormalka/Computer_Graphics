@@ -78,6 +78,7 @@ public class SeamsCarver extends ImageProcessor {
 		System.out.println("start increaseImageWidth");
 
 		reduceImageWidth(); // finding the best k seams and store them in matrix
+		this.currentWidth = this.inWidth;
 		System.out.println("after reduce");
 		BufferedImage increasedImage = this.workingImage;
 		this.imageMask = createCopyOfOriginalMask();
@@ -90,7 +91,26 @@ public class SeamsCarver extends ImageProcessor {
 
 	public BufferedImage showSeams(int seamColorRGB) {
 		// TODO: Implement this method (bonus), remove the exception.
-		throw new UnimplementedMethodException("showSeams");
+		//throw new UnimplementedMethodException("showSeams");
+		System.out.println("start show seems");
+		BufferedImage showSeamsImage = this.duplicateWorkingImage();
+		increaseImageWidth();
+		int length = this.bestSeamsIndexesMatrix.length;
+
+		for (int i = 0; i < length; i++) {
+			System.out.println("iteration " + i);
+
+			int[] seam =  this.bestSeamsIndexesMatrix[i];
+			for(int j = 0; j <this.inHeight; j++){
+
+				int x = seam[j];
+				System.out.println(x + " ," + j);
+				showSeamsImage.setRGB(x, j, seamColorRGB);
+			};
+		}
+
+		return showSeamsImage;
+
 	}
 
 	public boolean[][] getMaskAfterSeamCarving() {
@@ -104,7 +124,7 @@ public class SeamsCarver extends ImageProcessor {
 	this.imageMask
 	 */
 	public void calculateEnergyMatrix(){
-		System.out.println("calculateEnergyMatrix");
+		//System.out.println("calculateEnergyMatrix");
 		this.pushForEachParameters();
 		this.setForEachParameters(this.currentWidth, this.inHeight);
 		this.energyMatrix = new long[this.inHeight][this.currentWidth];
@@ -141,7 +161,7 @@ public class SeamsCarver extends ImageProcessor {
 
 
 	public void calculateCostMatrix(){
-		System.out.println("calculateCostMatrix");
+		//System.out.println("calculateCostMatrix");
 		this.pushForEachParameters();
 		this.setForEachParameters(this.currentWidth, this.inHeight);
 		this.costMatrix = new long[this.inHeight][this.currentWidth];
@@ -190,17 +210,15 @@ public class SeamsCarver extends ImageProcessor {
 	}
 
 	public long findMinNeighbor(int y, int x){
-		// TODO - the order of x and y
 
-		long neighborUp = this.costMatrix[y - 1][x]; // TODO ??
-		long C_up = 0; // TODO ??
+		long neighborUp = this.costMatrix[y - 1][x];
+		long C_up = 0;
 		long neighborLeft = Long.MAX_VALUE;
 		long neighborRight = Long.MAX_VALUE;
 
-		// NEW
 		if (x > 0 && ((x + 1) < this.currentWidth)){
 			C_up = calc_c_up(x,y);
-			neighborUp = this.costMatrix[y - 1][x] + C_up;
+			neighborUp += C_up;
 		}
 
 		if (x > 0){
@@ -268,7 +286,7 @@ public class SeamsCarver extends ImageProcessor {
 		boolean[][] newImageMask = new boolean[this.inHeight][newWidth];
 		int[] currentSeam =  bestSeamsIndexesMatrix[bestSeamIndexLocation];
 
-		System.out.println("start X: " + currentSeam[currentSeam.length - 1] + " count: " + bestSeamIndexLocation);
+		//System.out.println("start X: " + currentSeam[currentSeam.length - 1] + " count: " + bestSeamIndexLocation);
 
 		for (int y = 0; y < this.inHeight; y++){
 			int currentXIndex = currentSeam[y]; // the x index for the current row
