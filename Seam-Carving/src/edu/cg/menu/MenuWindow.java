@@ -243,17 +243,9 @@ public class MenuWindow extends JFrame implements Logger {
 	}
 
 	public void removeObjectFromImage(boolean[][] srcMask) {
-		// TODO: Implement this method, remove the exception.
-		//throw new UnimplementedMethodException("removeObjectFromImage");
-
-		// TODO: After completing the implementation - make sure you present the result.
-		// Just uncomment the following line, and replace 'result' with your
-		// result variable.
 
 		int currentWidth = srcMask[0].length;
-		int currentHeight = srcMask.length;
 		int maxTrueVal = maxTrueInRows(srcMask);
-		BufferedImage ans = new BufferedImage(currentWidth,currentHeight, this.workingImage.getType());
 
 		boolean[][] newMask = duplicateMask(srcMask);
 		BufferedImage reducedImage = null;
@@ -261,25 +253,19 @@ public class MenuWindow extends JFrame implements Logger {
 
 		while(maxTrueVal > 0){
 			//Δ = min (𝑾/𝟑,− 1, #𝑀𝑎𝑥𝑖𝑚𝑢𝑚 𝑛𝑢𝑚𝑏𝑒𝑟 𝑜𝑓 𝑡𝑟𝑢𝑒 𝑣𝑎𝑙𝑢𝑒𝑠 𝑖𝑛 𝑎 𝑟𝑜𝑤)
-			int W = currentWidth ;
-			int delta = Math.min((int)(W / 3) - 1, maxTrueVal);
+			int delta = Math.min((int)(currentWidth / 3) - 1, maxTrueVal);
 			RGBWeights rgbWeights = colorMixer.getRGBWeights();
 
 			//Remove Δ vertical seams using seam carving.
 			SeamsCarver scReduce = new SeamsCarver(this, duplicateImage(), (currentWidth-delta), rgbWeights, newMask);
-			System.out.println("1");
 			reducedImage = scReduce.resize();
-			System.out.println("2");
 			newMask = duplicateMask(scReduce.getMaskAfterSeamCarving());
 
 			//Increase the image size to the original image’s size.
 			SeamsCarver scIncrease = new SeamsCarver(this, reducedImage, currentWidth, rgbWeights, newMask);
-			System.out.println("3");
 			increasedImage = scIncrease.resize();
-			System.out.println("4");
 			newMask = duplicateMask(scIncrease.getMaskAfterSeamCarving());
 			maxTrueVal = maxTrueInRows(newMask);
-			System.out.println("after maxTrueInRows");
 		}
 
 		present(increasedImage, "Image After Object Removal");

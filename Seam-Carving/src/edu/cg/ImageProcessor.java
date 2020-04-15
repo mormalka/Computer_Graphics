@@ -124,7 +124,6 @@ public class ImageProcessor extends FunctioalForEachLoops {
 		BufferedImage ans = newEmptyOutputSizedImage();
 		this.setForEachParameters(this.outWidth, this.outHeight);
 		forEach((y, x) -> {
-			// TODO : DECIDE WHICH BETTER
 //			int originalImageX = Math.min(Math.round(x *  this.inWidth / this.outWidth), this.inWidth - 1);
 //			int originalImageY = Math.min(Math.round(y * this.inHeight / this.outHeight), this.inHeight- 1);
 
