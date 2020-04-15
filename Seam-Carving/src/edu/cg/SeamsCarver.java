@@ -94,16 +94,15 @@ public class SeamsCarver extends ImageProcessor {
 		//throw new UnimplementedMethodException("showSeams");
 		System.out.println("start show seems");
 		BufferedImage showSeamsImage = this.duplicateWorkingImage();
-		increaseImageWidth();
-		int length = this.bestSeamsIndexesMatrix.length;
+		increaseImageWidth(); // we can call it also with decrease? אולי נתחזק את הסימים (נקדם כל פעם ב1) כבר בהקטנה
 
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < this.bestSeamsIndexesMatrix.length; i++) {
 			System.out.println("iteration " + i);
 
-			int[] seam =  this.bestSeamsIndexesMatrix[i];
-			for(int j = 0; j <this.inHeight; j++){
+			int[] currentBestSeam =  this.bestSeamsIndexesMatrix[i];
+			for(int j = 0; j < this.inHeight; j++){
 
-				int x = seam[j];
+				int x = currentBestSeam[j];
 				System.out.println(x + " ," + j);
 				showSeamsImage.setRGB(x, j, seamColorRGB);
 			};
@@ -319,9 +318,12 @@ public class SeamsCarver extends ImageProcessor {
 
 	public void updateBestSeamsIndexesMatrix(int bestSeamIndexLocation){
 		// increase the index for each seam so they will match the original image
+		int[] currentSeam = this.bestSeamsIndexesMatrix[bestSeamIndexLocation];
 		for(int i = bestSeamIndexLocation + 1; i < this.bestSeamsIndexesMatrix.length; i++){
 			for(int j = 0; j < this.bestSeamsIndexesMatrix[0].length; j++){
-				this.bestSeamsIndexesMatrix[i][j]++;
+				if(currentSeam[j] < this.bestSeamsIndexesMatrix[i][j]) {
+					this.bestSeamsIndexesMatrix[i][j]++;
+				}
 			}
 		}
 	}
