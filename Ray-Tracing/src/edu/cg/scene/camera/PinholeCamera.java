@@ -4,8 +4,6 @@ import edu.cg.algebra.Point;
 import edu.cg.algebra.Vec;
 
 public class PinholeCamera {
-	// TODO Add your fields
-
 	/**
 	 * Initializes a pinhole camera model with default resolution 200X200 (RxXRy)
 	 * and View Angle 90.
@@ -58,7 +56,6 @@ public class PinholeCamera {
 	 * @return the middle point of the pixel (x,y) in the model coordinates.
 	 */
 	public Point transform(int x, int y) {
-		// TODO: implement this method.
 		int R_x = this.resolution[1];
 		int R_y = this.resolution[0];
 		double w = 2 * this.distanceToPlain *Math.tan(this.viewAngle/2); //plain width
