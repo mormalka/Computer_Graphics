@@ -21,11 +21,10 @@ public class SeamsCarver extends ImageProcessor {
 	BufferedImage greyScaleImage;
 	long [][] costMatrix;
 	int currentWidth;
-	int [][] bestSeamsIndexesMatrix;
 	int removedSeamCounter;
 	boolean[][] originalMask;
-	int [][] trueIndicesMatrix;
-	ArrayList<int[]> trueBestSeamsIndices; //remembering the real indices
+	int [][] trueIndicesMatrix; // real indices matrix
+	ArrayList<int[]> trueBestSeamsIndices; //remembering the real indices of the seams
 
 	public SeamsCarver(Logger logger, BufferedImage workingImage, int outWidth, RGBWeights rgbWeights,
 			boolean[][] imageMask) {
@@ -51,7 +50,6 @@ public class SeamsCarver extends ImageProcessor {
 		this.currentWidth = inWidth;
 		this.greyScaleImage = this.greyscale();
 		this.removedSeamCounter = 0;
-		this.bestSeamsIndexesMatrix = new int[this.numOfSeams][this.inHeight];
 		this.originalMask = imageMask;
 		this.calculateEnergyMatrix();
 		this.calculateCostMatrix();
@@ -81,26 +79,26 @@ public class SeamsCarver extends ImageProcessor {
 		this.currentWidth = this.inWidth;
 		BufferedImage increasedImage = new BufferedImage(this.outWidth, this.outHeight, this.workingImageType);
 		boolean [][] newMask = new boolean [this.outHeight][this.outWidth];
+		int numOfShiftsRight = 0; // accumulate the num of pixels added in each row to indicate the shifts needed
 
 		for(int row = 0; row < this.inHeight; row++){
-			int numOfshiftsRight = 0;
-			for(int column =0; column <this.inWidth; column++){
-				int currentXIndex = column + numOfshiftsRight;
-				increasedImage.setRGB(currentXIndex, row, this.workingImage.getRGB(column, row));
+			numOfShiftsRight = 0;
+			for(int column = 0; column <this.inWidth; column++){
+				int currentXIndex = column + numOfShiftsRight;
+				int currentColor = this.workingImage.getRGB(column, row);
+				increasedImage.setRGB(currentXIndex, row, currentColor);
 				newMask[row][column] = this.originalMask[row][column];
-				for(int seam =0; seam <this.bestSeamsIndexesMatrix.length; seam++){
+				for(int seam = 0; seam < this.trueBestSeamsIndices.size(); seam++){
 					if(this.trueBestSeamsIndices.get(seam)[row] == column){
-						int currentColor = this.workingImage.getRGB(column, row);
-						increasedImage.setRGB(column + (++numOfshiftsRight), row, currentColor);
-						newMask[row][column + numOfshiftsRight] = this.originalMask[row][column];
+						currentColor = this.workingImage.getRGB(column, row);
+						increasedImage.setRGB(column + (++numOfShiftsRight), row, currentColor);
+						newMask[row][column + numOfShiftsRight] = this.originalMask[row][column];
 					}
 				}
 			}
 		}
 
-		this.logger.log("begins increasing image size");
 		this.imageMask = newMask;
-
 		return increasedImage;
 	}
 
@@ -108,7 +106,7 @@ public class SeamsCarver extends ImageProcessor {
 		BufferedImage showSeamsImage = this.duplicateWorkingImage();
 		reduceImageWidth();
 
-		for (int i = 0; i < this.bestSeamsIndexesMatrix.length; i++) {
+		for (int i = 0; i < this.trueBestSeamsIndices.size(); i++) {
 			int[] currentBestSeam =  this.trueBestSeamsIndices.get(i);
 			for(int j = 0; j < this.inHeight; j++){
 				int x = currentBestSeam[j];
@@ -121,7 +119,7 @@ public class SeamsCarver extends ImageProcessor {
 	}
 
 	public boolean[][] getMaskAfterSeamCarving() {
-		return this.imageMask;
+		return this.imageMask; // holds the updated mask of the current image
 	}
 
 	/*
@@ -282,7 +280,6 @@ public class SeamsCarver extends ImageProcessor {
 	private BufferedImage removeBestSeam(BufferedImage currentColorImage){
 		int minXIndex = this.findMinCostInCostMatrix();
 		int [] currentBestSeam = backtrackTheBestSeam(minXIndex);
-		this.bestSeamsIndexesMatrix[this.removedSeamCounter] = currentBestSeam;
 		// remove it and save it's values
 		int newWidth = this.currentWidth - 1;
 		BufferedImage newImage = new BufferedImage(newWidth, this.inHeight, this.workingImageType);
