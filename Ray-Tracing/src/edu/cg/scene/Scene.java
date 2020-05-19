@@ -2,6 +2,7 @@ package edu.cg.scene;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -11,6 +12,7 @@ import java.util.concurrent.Future;
 
 import edu.cg.Logger;
 import edu.cg.UnimplementedMethodException;
+import edu.cg.algebra.Hit;
 import edu.cg.algebra.Point;
 import edu.cg.algebra.Ray;
 import edu.cg.algebra.Vec;
@@ -173,8 +175,31 @@ public class Scene {
 	}
 
 	private Vec calcColor(Ray ray, int recusionLevel) {
-		// TODO: Implement this method.
 		// This is the recursive method in RayTracing.
-		throw new UnimplementedMethodException("calcColor");
+		if (recusionLevel >= this.maxRecursionLevel){
+			return null; // TODO
+		}
+
+		Hit closestHit = surfaces.get(0).intersect(ray); // initial to the intersection with the first item in surfaces
+		Surface closestSurface = surfaces.get(0);
+		for(Surface s: this.surfaces){ // search for the closest hit
+			Hit currentHit = s.intersect(ray);
+			if(closestHit != null && closestHit.compareTo(currentHit) == 1){
+				closestHit = currentHit;
+				closestSurface = s;
+			}
+		}
+
+		if(closestHit == null){ // in case no intersection was found
+			return this.backgroundColor;
+		}
+
+		Vec color = new Vec();
+		this.ambient.mult(closestSurface.Ka()); // add the ambient parameter
+
+
+
+		return null;
+//		throw new UnimplementedMethodException("calcColor");
 	}
 }
