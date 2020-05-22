@@ -40,6 +40,7 @@ public class Sphere extends Shape {
 	@Override
 	public Hit intersect(Ray ray) {
 		Vec sourceSubCenter = ray.source().sub(this.center);
+		// a = 1 because ray's direction is normalized
 		double b = ray.direction().mult(2).dot(sourceSubCenter);
 		double c = sourceSubCenter.dot(sourceSubCenter) - (this.radius*this.radius);
 		double sqrt_arg = Math.pow(b,2) -4 * c;
@@ -48,15 +49,15 @@ public class Sphere extends Shape {
 			return null; // no solution
 		}
 		double t_1 = (-1*b - Math.sqrt(sqrt_arg)) / 2;
-		normal = ray.add(t_1).sub(this.center).normalize();
-		if (sqrt_arg == 0){ // one solution
-			return new Hit(t_1,normal);
-		}
 		double t_2 = (-1*b + Math.sqrt(sqrt_arg)) / 2;
-		if(t_1 < t_2){ // return the minimal t
-			return new Hit(t_1,normal);
+		normal = ray.add(t_1).sub(this.center).normalize();
+		if(t_2 <= 0){
+			return null; // t_1 <= t_2 so both are non positive
 		}
-		normal = ray.add(t_2).sub(this.center).normalize();
-		return new Hit(t_2,normal);
+		if (t_1 <= 0){
+			normal = ray.add(t_2).sub(this.center).normalize();
+			return new Hit(t_2,normal);
+		}
+		return new Hit(t_1,normal);
 	}
 }

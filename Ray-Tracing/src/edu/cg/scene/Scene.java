@@ -18,6 +18,7 @@ import edu.cg.algebra.Ray;
 import edu.cg.algebra.Vec;
 import edu.cg.scene.camera.PinholeCamera;
 import edu.cg.scene.lightSources.Light;
+import edu.cg.scene.objects.Sphere;
 import edu.cg.scene.objects.Surface;
 
 public class Scene {
@@ -189,17 +190,56 @@ public class Scene {
 				closestSurface = s;
 			}
 		}
+		closestHit.setSurface(closestSurface);
 
 		if(closestHit == null){ // in case no intersection was found
 			return this.backgroundColor;
 		}
 
-		Vec color = new Vec();
-		this.ambient.mult(closestSurface.Ka()); // add the ambient parameter
+		Vec color = this.ambient.mult(closestHit.getSurface().Ka()); // add the ambient parameter
 
+		for(Light L : this.lightSources){ // diffuse and specular
+			Vec normal = closestHit.getNormalToSurface();
+			Point hitPoint = new Point().add(closestHit.t(), normal);
+			double shadow = calcShadow(hitPoint, L);
+			if(shadow == 1){
+				Ray rayToLight = L.rayToLight(hitPoint);
+				Vec diffuse = calcDiffuse(normal, closestHit, rayToLight);
+				Vec d_n_s = diffuse.add(calcSpecular(normal, closestHit, rayToLight, ray));
+				Vec I_L = L.intensity(hitPoint, rayToLight);
+
+				color = color.add(d_n_s.mult(I_L));
+			}
+		}
+
+		// TODO: REPLECTION REFRACTION K_R K_T
 
 
 		return null;
 //		throw new UnimplementedMethodException("calcColor");
+	}
+
+	private Vec calcDiffuse(Vec normal, Hit closestHit, Ray rayToLight){
+		Vec diffuseLight = closestHit.getSurface().Kd();
+		double dotProd = normal.dot(rayToLight.direction());
+		return diffuseLight.mult(dotProd);
+	}
+
+	private Vec calcSpecular (Vec normal, Hit closestHit, Ray rayToLight, Ray currentRay){
+		Vec specularLight = closestHit.getSurface().Ks();
+		int n = closestHit.getSurface().shininess();
+		Vec u = rayToLight.direction();
+		Vec R = u.add(normal.mult(u.dot(normal)).mult(-2));
+		Vec V = currentRay.direction();
+		return specularLight.mult(Math.pow(V.dot(R), n));
+	}
+
+	private double calcShadow(Point hitPoint, Light L){
+		for(Surface s: this.surfaces){
+			if(L.isOccludedBy(s, L.rayToLight(hitPoint))){
+				return 0;
+			}
+		}
+		return 1;
 	}
 }

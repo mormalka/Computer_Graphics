@@ -58,7 +58,7 @@ public class PinholeCamera {
 	public Point transform(int x, int y) {
 		int R_x = this.resolution[1];
 		int R_y = this.resolution[0];
-		double w = 2 * this.distanceToPlain *Math.tan(this.viewAngle/2); //plain width
+		double w = 2 * this.distanceToPlain *Math.tan(Math.toRadians(this.viewAngle/2)); //plain width
 		double R = w / R_x; // Ratio (pixel width)
 		Vec d_towardsVec = this.towardsVec.mult(this.distanceToPlain);
 		Point p_center = new Point(p0.x +d_towardsVec.x ,p0.y +d_towardsVec.y ,p0.z +d_towardsVec.z);
