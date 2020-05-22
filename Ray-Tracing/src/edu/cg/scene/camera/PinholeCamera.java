@@ -1,6 +1,7 @@
 package edu.cg.scene.camera;
 
 import edu.cg.algebra.Point;
+import edu.cg.algebra.Ray;
 import edu.cg.algebra.Vec;
 
 public class PinholeCamera {
@@ -21,8 +22,8 @@ public class PinholeCamera {
 	Vec towardsVec;
 	Vec upVec;
 	double distanceToPlain;
-	double viewAngle = 90;
-	int[] resolution = {200,200};
+	double viewAngle;
+	int[] resolution = new int[2];
 	Point p0 = new Point(0,0,0);
 
 	public PinholeCamera(Point cameraPosition, Vec towardsVec, Vec upVec, double distanceToPlain) {
@@ -31,6 +32,9 @@ public class PinholeCamera {
 		this.towardsVec = towardsVec.normalize();
 		this.upVec = upVec.normalize();
 		this.distanceToPlain = distanceToPlain;
+		this.viewAngle = 90;
+		this.resolution[0] = 200;
+		this.resolution[1] = 200;
 	}
 
 	/**
@@ -60,8 +64,7 @@ public class PinholeCamera {
 		int R_y = this.resolution[0];
 		double w = 2 * this.distanceToPlain *Math.tan(Math.toRadians(this.viewAngle/2)); //plain width
 		double R = w / R_x; // Ratio (pixel width)
-		Vec d_towardsVec = this.towardsVec.mult(this.distanceToPlain);
-		Point p_center = new Point(p0.x +d_towardsVec.x ,p0.y +d_towardsVec.y ,p0.z +d_towardsVec.z);
+		Point p_center =  new Ray(cameraPosition, towardsVec).add(distanceToPlain);
 		Vec rightVec = (this.towardsVec.cross(this.upVec)).normalize();
 		Vec tilda_upVec = (rightVec.cross(this.towardsVec)).normalize();
 
@@ -72,7 +75,6 @@ public class PinholeCamera {
 		P = P.add(eq_right.add(eq_left));
 
 		return P;
-		//throw new UnimplementedMethodException("PinholeCamera.transform is not implemented.");
 	}
 
 	/**
@@ -81,8 +83,6 @@ public class PinholeCamera {
 	 * @return a new point representing the camera position.
 	 */
 	public Point getCameraPosition() {
-
 		return this.cameraPosition;
-		//throw new UnimplementedMethodException("PinholeCamera.getCameraPosition");
 	}
 }

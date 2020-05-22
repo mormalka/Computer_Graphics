@@ -182,16 +182,23 @@ public class Scene {
 		Surface closestSurface = surfaces.get(0);
 		for(Surface s: this.surfaces){ // search for the closest hit
 			Hit currentHit = s.intersect(ray);
-			if(closestHit != null && closestHit.compareTo(currentHit) == 1){
-				closestHit = currentHit;
-				closestSurface = s;
+			if(currentHit != null){
+				if(closestHit != null){
+					if(closestHit.compareTo(currentHit) == 1){
+						closestHit = currentHit;
+						closestSurface = s;
+					}
+				} else {
+					closestHit = currentHit;
+					closestSurface = s;
+				}
 			}
 		}
-		closestHit.setSurface(closestSurface);
 
 		if(closestHit == null){ // in case no intersection was found
 			return this.backgroundColor;
 		}
+		closestHit.setSurface(closestSurface);
 
 		Vec color = this.ambient.mult(closestHit.getSurface().Ka()); // add the ambient parameter
 		Vec normal = closestHit.getNormalToSurface();
