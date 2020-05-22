@@ -33,6 +33,7 @@ public class DirectionalLight extends Light {
 	@Override
 	public Ray rayToLight(Point fromPoint) {
 		// TODO: Implement this.
+
 		throw new UnimplementedMethodException("DirectionalLight.rayToLight");
 	}
 

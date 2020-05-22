@@ -176,11 +176,8 @@ public class Scene {
 	}
 
 	private Vec calcColor(Ray ray, int recusionLevel) {
+//		this.logger.log("calc color");
 		// This is the recursive method in RayTracing.
-		if (recusionLevel >= this.maxRecursionLevel){
-			return null; // TODO
-		}
-
 		Hit closestHit = surfaces.get(0).intersect(ray); // initial to the intersection with the first item in surfaces
 		Surface closestSurface = surfaces.get(0);
 		for(Surface s: this.surfaces){ // search for the closest hit
@@ -197,10 +194,10 @@ public class Scene {
 		}
 
 		Vec color = this.ambient.mult(closestHit.getSurface().Ka()); // add the ambient parameter
+		Vec normal = closestHit.getNormalToSurface();
+		Point hitPoint = new Point().add(closestHit.t(), normal);
 
 		for(Light L : this.lightSources){ // diffuse and specular
-			Vec normal = closestHit.getNormalToSurface();
-			Point hitPoint = new Point().add(closestHit.t(), normal);
 			double shadow = calcShadow(hitPoint, L);
 			if(shadow == 1){
 				Ray rayToLight = L.rayToLight(hitPoint);
@@ -212,10 +209,21 @@ public class Scene {
 			}
 		}
 
-		// TODO: REPLECTION REFRACTION K_R K_T
+		recusionLevel++;
+		if (recusionLevel > this.maxRecursionLevel){
+			return color;
+		}
+		// reflective implementation
+		if(closestHit.getSurface().reflectionIntensity() > 0){
+			Vec r_v =  ray.direction().add(normal.mult(ray.direction().dot(normal)).mult(-2));
+			Ray ReflectiveRay = new Ray(hitPoint,r_v);
+			double K_R = closestHit.getSurface().reflectionIntensity();
+			color = color.add(calcColor(ReflectiveRay, recusionLevel).mult(K_R));
+		}
 
+		// TODO : REFRACTIONS (BONUS)
 
-		return null;
+		return color;
 //		throw new UnimplementedMethodException("calcColor");
 	}
 
