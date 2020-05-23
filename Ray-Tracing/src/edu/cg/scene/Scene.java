@@ -173,7 +173,6 @@ public class Scene {
 
 
 	private Vec calcColor(Ray ray, int recusionLevel) {
-//		this.logger.log("calc color");
 		// This is the recursive method in RayTracing.
 		Hit closestHit = surfaces.get(0).intersect(ray); // initial to the intersection with the first item in surfaces
 		Surface closestSurface = surfaces.get(0);

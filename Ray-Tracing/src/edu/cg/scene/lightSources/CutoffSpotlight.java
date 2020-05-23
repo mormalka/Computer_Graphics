@@ -1,5 +1,6 @@
 package edu.cg.scene.lightSources;
 
+import edu.cg.algebra.Ops;
 import edu.cg.algebra.Point;
 import edu.cg.algebra.Ray;
 import edu.cg.algebra.Vec;
@@ -54,7 +55,7 @@ public class CutoffSpotlight extends PointLight {
 	public Vec intensity(Point hittingPoint, Ray rayToLight) {
 		double cos_a = rayToLight.direction().mult(-1).dot(this.direction.normalize());
 		double a = Math.acos(cos_a);
-		if(Math.toDegrees(a) > this.cutoffAngle){
+		if(Math.toDegrees(a) > this.cutoffAngle	|| a < Ops.epsilon){
 			return new Vec(); // intensity = 0
 		}
 		return super.intensity(hittingPoint, rayToLight).mult(cos_a);

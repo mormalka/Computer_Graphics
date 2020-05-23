@@ -72,22 +72,22 @@
       },
       "material": {
         "Ka": {
-          "x": 0.028384813725962188,
-          "y": 0.3202751299617659,
-          "z": 0.2757493720923192
+          "x": 0.1,
+          "y": 0.1,
+          "z": 0.1
         },
         "Kd": {
-          "x": 0.056769627451924376,
-          "y": 0.6405502599235318,
-          "z": 0.5514987441846384
+          "x": 0.1,
+          "y": 0.1,
+          "z": 0.1
         },
         "Ks": {
-          "x": 1.0,
-          "y": 1.0,
-          "z": 1.0
+          "x": 0.1,
+          "y": 0.1,
+          "z": 0.1
         },
-        "reflectionIntensity": 0.0,
-        "shininess": 10,
+        "reflectionIntensity": 0.95,
+        "shininess": 12,
         "isTransparent": false,
         "refractionIntensity": 0.3,
         "refractionIndex": 1.5
@@ -122,7 +122,7 @@
           "z": 0.1
         },
         "reflectionIntensity": 0.8,
-        "shininess": 14,
+        "shininess": 3,
         "isTransparent": true,
         "refractionIntensity": 0.2,
         "refractionIndex": 1.5

@@ -159,7 +159,7 @@
           "z": 0.1
         },
         "reflectionIntensity": 0.8,
-        "shininess": 7,
+        "shininess": 12,
         "isTransparent": true,
         "refractionIntensity": 0.2,
         "refractionIndex": 1.5
