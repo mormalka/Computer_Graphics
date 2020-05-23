@@ -138,5 +138,83 @@ public class Scenes {
 		
 		return finalScene;
 	}
-	
+
+	public static Scene scene5() {
+		// Define basic properties of the scene
+		Scene finalScene = new Scene().initAmbient(new Vec(1.0))
+				.initCamera(/* Camera Position = */new Point(0.0, 2.0, 6.0),
+						/* Towards Vector = */ new Vec(0.0, -0.1 ,-1.0),
+						/* Up vector = */new Vec(0.0, 1.0, 0.0),
+						/*Distance to plain =*/ 2.0)
+				.initName("scene5").initAntiAliasingFactor(1)
+				.initRenderRefarctions(true).initRenderReflections(true).initMaxRecursionLevel(5)
+				.initBackgroundColor(new Vec(0.6,0.3,0.8));
+
+		// Add Surfaces to the scene.
+		// (1) A plain that represents the ground floor.
+		Shape plainShape = new Plain(new Vec(0.0,1.0,0.0), new Point(0.0, -1.0, 0.0));
+		Material plainGlass = Material.getGlassMaterial(false);
+		Surface plainSurface = new Surface(plainShape, plainGlass);
+		finalScene.addSurface(plainSurface);
+
+		// (2) We will also add spheres to form a triangle shape (similar to a pool game).
+		for (int depth = 0; depth < 3; depth++) {
+			for(int width= 0; width < 5; width++) {
+				Shape sphereShape = new Sphere(new Point((double)width, 0.0, -1.0*(double)depth), 0.5);
+				Material sphereMat = Material.getMetalMaterial();
+				Surface sphereSurface = new Surface(sphereShape, sphereMat);
+				finalScene.addSurface(sphereSurface);
+			}
+
+		}
+
+		// Add light sources:
+		CutoffSpotlight cutoffSpotlight = new CutoffSpotlight(new Vec(0.0, -1.0, 0.0), 45.0);
+		cutoffSpotlight.initPosition(new Point(4.0, 4.0, -3.0));
+		cutoffSpotlight.initIntensity(new Vec(1.0,0.6,0.6));
+		finalScene.addLightSource(cutoffSpotlight);
+		cutoffSpotlight = new CutoffSpotlight(new Vec(0.0, -1.0, 0.0), 30.0);
+		cutoffSpotlight.initPosition(new Point(-4.0, 4.0, -3.0));
+		cutoffSpotlight.initIntensity(new Vec(0.6,1.0,0.6));
+		finalScene.addLightSource(cutoffSpotlight);
+		cutoffSpotlight = new CutoffSpotlight(new Vec(0.0, -1.0, 0.0), 30.0);
+		cutoffSpotlight.initPosition(new Point(0.0, 4.0, 0.0));
+		cutoffSpotlight.initIntensity(new Vec(0.6,0.6,1.0));
+		finalScene.addLightSource(cutoffSpotlight);
+		DirectionalLight directionalLight=new DirectionalLight(new Vec(0.5,-0.5,0.0),new Vec(0.2));
+		finalScene.addLightSource(directionalLight);
+
+		return finalScene;
+	}
+	public static Scene scene6() {
+		// Define basic properties of the scene
+		Scene finalScene = new Scene().initAmbient(new Vec(1.0))
+				.initCamera(/* Camera Position = */new Point(0.0, 2.0, 6.0),
+						/* Towards Vector = */ new Vec(0.0, -0.1 ,-1.0),
+						/* Up vector = */new Vec(0.0, 1.0, 0.0),
+						/*Distance to plain =*/ 2.0)
+				.initName("scene6").initAntiAliasingFactor(1)
+				.initAmbient(new Vec(0.4))
+				.initRenderRefarctions(true).initRenderReflections(true).initMaxRecursionLevel(6);
+		// Add Surfaces to the scene.
+		// (1) A plain that represents the ground floor.
+		Shape plainShape = new Plain(new Vec(0.0,1.0,0.0), new Point(0.0, -1.0, 0.0));
+		Material randomPlain = Material.getRandomMaterial();
+		Surface plainSurface = new Surface(plainShape, randomPlain);
+		finalScene.addSurface(plainSurface);
+
+
+		for(int i = 0; i < 6; i++) {
+			Shape sphereShape = new Sphere(new Point((double)i, 0.0, -1.0*i), 0.5);
+			Material sphereMat = Material.getRandomMaterial();
+			Surface sphereSurface = new Surface(sphereShape, sphereMat);
+			finalScene.addSurface(sphereSurface);
+		}
+
+		DirectionalLight directionalLight=new DirectionalLight(new Vec(0.5,-0.5,0.0),new Vec(0.7));
+		finalScene.addLightSource(directionalLight);
+
+
+		return finalScene;
+	}
 }

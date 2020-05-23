@@ -230,6 +230,11 @@ public class Scene {
 				color = color.add(temp_color.mult(K_R));
 			}
 		}
+		if(this.renderRefarctions) {
+			// reflective implementation
+
+
+		}
 		// TODO : REFRACTIONS (BONUS)
 		return color;
 //		throw new UnimplementedMethodException("calcColor");
