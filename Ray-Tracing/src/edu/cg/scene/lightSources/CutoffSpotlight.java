@@ -47,7 +47,7 @@ public class CutoffSpotlight extends PointLight {
 
 	@Override
 	public boolean isOccludedBy(Surface surface, Ray rayToLight) {
-		return super.isOccludedBy(surface, rayToLight); //TODO : CHECK
+		return super.isOccludedBy(surface, rayToLight);
 	}
 
 	@Override
