@@ -1,10 +1,8 @@
 package edu.cg.scene;
 
 import edu.cg.Logger;
-import edu.cg.algebra.Hit;
 import edu.cg.algebra.Point;
-import edu.cg.algebra.Ray;
-import edu.cg.algebra.Vec;
+import edu.cg.algebra.*;
 import edu.cg.scene.camera.PinholeCamera;
 import edu.cg.scene.lightSources.Light;
 import edu.cg.scene.objects.Surface;
@@ -231,13 +229,17 @@ public class Scene {
 			}
 		}
 		if(this.renderRefarctions) {
-			// reflective implementation
+			// reflective implementation-BONUS
+			if(closestHit.getSurface().isTransparent()){
+				Vec refractiveVec = Ops.refract(ray.direction(), normal, closestHit.getSurface().n1(closestHit), closestHit.getSurface().n2(closestHit));
+				Ray refractiveRay = new Ray(hitPoint, refractiveVec);
+				double K_T = closestHit.getSurface().refractionIntensity();
+				Vec temp_color = calcColor(refractiveRay, recusionLevel);
 
-
+				color = color.add(temp_color.mult(K_T));
+			}
 		}
-		// TODO : REFRACTIONS (BONUS)
 		return color;
-//		throw new UnimplementedMethodException("calcColor");
 	}
 
 	private Vec calcDiffuse(Vec normal, Hit closestHit, Ray rayToLight){

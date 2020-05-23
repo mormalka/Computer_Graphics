@@ -153,7 +153,7 @@ public class Scenes {
 		// Add Surfaces to the scene.
 		// (1) A plain that represents the ground floor.
 		Shape plainShape = new Plain(new Vec(0.0,1.0,0.0), new Point(0.0, -1.0, 0.0));
-		Material plainGlass = Material.getGlassMaterial(false);
+		Material plainGlass = Material.getGlassMaterial(true);
 		Surface plainSurface = new Surface(plainShape, plainGlass);
 		finalScene.addSurface(plainSurface);
 

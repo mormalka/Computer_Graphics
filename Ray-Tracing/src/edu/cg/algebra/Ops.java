@@ -1,7 +1,5 @@
 package edu.cg.algebra;
 
-import edu.cg.UnimplementedMethodException;
-
 //import ex3.UnimplementedMethodException;
 
 public class Ops {
@@ -107,8 +105,13 @@ public class Ops {
 	 * @return
 	 */
 	public static Vec refract(Vec u, Vec normal, double n1, double n2) {
-		// TODO: Bonus implementation. 
-		// Snell's law: n1*sin(theta1) = n2*sin(theta2)
-		throw new UnimplementedMethodException("Ops.refract(Vec, Vec, double, double)");
+		//Bonus implementation.
+		double theta1 = Math.acos(u.dot(normal));
+		double sin_theta2 = (n1 * Math.sin(theta1)) / n2; //Snell's law
+		double temp_arg =(n1/n2)*Math.cos(theta1) - Math.cos(Math.asin(sin_theta2));
+		Vec T = normal.mult(temp_arg); //n1/n2∗𝑐𝑜𝑠(θ1) −𝑐𝑜𝑠(θ2))∗𝑁
+		T = T.add(u.mult((double)n1/n2)); //(n1/n2)∗𝐿
+
+		return T;
 	}
 }
