@@ -172,6 +172,8 @@ public class Scene {
 		});
 	}
 
+	
+
 	private Vec calcColor(Ray ray, int recusionLevel) {
 //		this.logger.log("calc color");
 		// This is the recursive method in RayTracing.

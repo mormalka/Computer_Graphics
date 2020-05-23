@@ -1,10 +1,6 @@
 package edu.cg.scene.objects;
 
-import edu.cg.UnimplementedMethodException;
-import edu.cg.algebra.Hit;
-import edu.cg.algebra.Point;
-import edu.cg.algebra.Ray;
-import edu.cg.algebra.Vec;
+import edu.cg.algebra.*;
 
 public class Sphere extends Shape {
 	private Point center;
@@ -51,13 +47,14 @@ public class Sphere extends Shape {
 		double t_1 = (-1*b - Math.sqrt(sqrt_arg)) / 2;
 		double t_2 = (-1*b + Math.sqrt(sqrt_arg)) / 2;
 		normal = ray.add(t_1).sub(this.center).normalize();
-		if(t_2 <= 0){
+		if(t_2 < Ops.epsilon){
 			return null; // t_1 <= t_2 so both are non positive
 		}
-		if (t_1 <= 0){
+		if (t_1 < Ops.epsilon){
 			normal = ray.add(t_2).sub(this.center).normalize();
 			return new Hit(t_2,normal);
 		}
+
 		return new Hit(t_1,normal);
 	}
 }

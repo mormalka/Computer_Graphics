@@ -1,7 +1,8 @@
 package edu.cg.scene.lightSources;
 
-import edu.cg.UnimplementedMethodException;
-import edu.cg.algebra.*;
+import edu.cg.algebra.Point;
+import edu.cg.algebra.Ray;
+import edu.cg.algebra.Vec;
 import edu.cg.scene.objects.Surface;
 
 public class CutoffSpotlight extends PointLight {
