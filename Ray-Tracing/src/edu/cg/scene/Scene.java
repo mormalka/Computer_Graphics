@@ -1,25 +1,22 @@
 package edu.cg.scene;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
 import edu.cg.Logger;
-import edu.cg.UnimplementedMethodException;
 import edu.cg.algebra.Hit;
 import edu.cg.algebra.Point;
 import edu.cg.algebra.Ray;
 import edu.cg.algebra.Vec;
 import edu.cg.scene.camera.PinholeCamera;
 import edu.cg.scene.lightSources.Light;
-import edu.cg.scene.objects.Sphere;
 import edu.cg.scene.objects.Surface;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class Scene {
 	private String name = "scene";
@@ -202,7 +199,7 @@ public class Scene {
 
 		Vec color = this.ambient.mult(closestHit.getSurface().Ka()); // add the ambient parameter
 		Vec normal = closestHit.getNormalToSurface();
-		Point hitPoint = new Point().add(closestHit.t(), normal);
+		Point hitPoint = ray.getHittingPoint(closestHit);
 
 		for(Light L : this.lightSources){ // diffuse and specular
 			double shadow = calcShadow(hitPoint, L);
@@ -220,14 +217,17 @@ public class Scene {
 		if (recusionLevel > this.maxRecursionLevel){
 			return color;
 		}
-		// reflective implementation
-		if(closestHit.getSurface().reflectionIntensity() > 0){
-			Vec r_v =  ray.direction().add(normal.mult(ray.direction().dot(normal)).mult(-2));
-			Ray ReflectiveRay = new Ray(hitPoint,r_v);
-			double K_R = closestHit.getSurface().reflectionIntensity();
-			color = color.add(calcColor(ReflectiveRay, recusionLevel).mult(K_R));
-		}
+		if(this.renderReflections) {
+			// reflective implementation
+			if (closestHit.getSurface().reflectionIntensity() > 0) {
+				Vec r_v = ray.direction().add(normal.mult(ray.direction().dot(normal)).mult(-2));
+				Ray ReflectiveRay = new Ray(hitPoint, r_v);
+				double K_R = closestHit.getSurface().reflectionIntensity();
+				Vec temp_color = calcColor(ReflectiveRay, recusionLevel);
 
+				color = color.add(temp_color.mult(K_R));
+			}
+		}
 		// TODO : REFRACTIONS (BONUS)
 
 		return color;
