@@ -172,7 +172,7 @@ public class Scene {
 		});
 	}
 
-	
+
 
 	private Vec calcColor(Ray ray, int recusionLevel) {
 //		this.logger.log("calc color");
@@ -231,7 +231,6 @@ public class Scene {
 			}
 		}
 		// TODO : REFRACTIONS (BONUS)
-
 		return color;
 //		throw new UnimplementedMethodException("calcColor");
 	}
@@ -239,16 +238,20 @@ public class Scene {
 	private Vec calcDiffuse(Vec normal, Hit closestHit, Ray rayToLight){
 		Vec diffuseLight = closestHit.getSurface().Kd();
 		double dotProd = normal.dot(rayToLight.direction());
-		return diffuseLight.mult(dotProd);
+		return diffuseLight.mult(Math.max(dotProd, 0));
 	}
 
 	private Vec calcSpecular (Vec normal, Hit closestHit, Ray rayToLight, Ray currentRay){
 		Vec specularLight = closestHit.getSurface().Ks();
 		int n = closestHit.getSurface().shininess();
 		Vec u = rayToLight.direction();
-		Vec R = u.add(normal.mult(u.dot(normal)).mult(-2));
+		Vec R = u.add(normal.mult(u.dot(normal)).mult(-2)); //reflective vector
 		Vec V = currentRay.direction();
-		return specularLight.mult(Math.pow(V.dot(R), n));
+		double dotProd = V.dot(R);
+
+		if (dotProd < 0) return new Vec();
+		return specularLight.mult(Math.pow(dotProd, n));
+
 	}
 
 	private double calcShadow(Point hitPoint, Light L){
