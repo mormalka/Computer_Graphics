@@ -217,4 +217,36 @@ public class Scenes {
 
 		return finalScene;
 	}
+
+	public static Scene scene7() {
+		// Define basic properties of the scene
+		Scene finalScene = new Scene().initAmbient(new Vec(1.0))
+				.initCamera(/* Camera Position = */new Point(0.0, 2.0, 6.0),
+						/* Towards Vector = */ new Vec(0.0, -0.1 ,-1.0),
+						/* Up vector = */new Vec(0.0, 1.0, 0.0),
+						/*Distance to plain =*/ 2.0)
+				.initName("scene7").initAntiAliasingFactor(1)
+				.initAmbient(new Vec(0.4))
+				.initRenderRefarctions(true).initRenderReflections(true).initMaxRecursionLevel(6)
+				.initBackgroundColor(new Vec(0.7, 0.5, 0.4));
+		// Add Surfaces to the scene.
+		// (1) A plain that represents the ground floor.
+		Shape plainShape = new Plain(new Vec(0.0,1.0,0.0), new Point(0.0, -1.0, 0.0));
+		Material randomPlain = Material.getRandomMaterial();
+		Surface plainSurface = new Surface(plainShape, randomPlain);
+		finalScene.addSurface(plainSurface);
+
+
+		Shape sphereShape = new Sphere(new Point(1.0, 0.0, 1.0), 1.5);
+		Material sphereMat = Material.getGlassMaterial(true);
+		Surface sphereSurface = new Surface(sphereShape, sphereMat);
+		finalScene.addSurface(sphereSurface);
+
+		// Add lighting condition:
+		DirectionalLight directionalLight=new DirectionalLight(new Vec(0.5,-0.5,0.0),new Vec(0.7));
+		finalScene.addLightSource(directionalLight);
+
+
+		return finalScene;
+	}
 }

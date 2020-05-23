@@ -54,6 +54,9 @@ public class Sphere extends Shape {
 			normal = ray.add(t_2).sub(this.center).normalize();
 			return new Hit(t_2,normal);
 		}
+		if (t_1 > Ops.infinity) {
+			return null;
+		}
 
 		return new Hit(t_1,normal);
 	}

@@ -229,7 +229,7 @@ public class Scene {
 			}
 		}
 		if(this.renderRefarctions) {
-			// reflective implementation-BONUS
+			// refractive implementation-BONUS
 			if(closestHit.getSurface().isTransparent()){
 				Vec refractiveVec = Ops.refract(ray.direction(), normal, closestHit.getSurface().n1(closestHit), closestHit.getSurface().n2(closestHit));
 				Ray refractiveRay = new Ray(hitPoint, refractiveVec);
