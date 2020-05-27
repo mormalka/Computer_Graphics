@@ -174,8 +174,8 @@ public class Scene {
 
 	private Vec calcColor(Ray ray, int recusionLevel) {
 		// This is the recursive method in RayTracing.
-		Hit closestHit = surfaces.get(0).intersect(ray); // initial to the intersection with the first item in surfaces
-		Surface closestSurface = surfaces.get(0);
+		Hit closestHit = null;
+		Surface closestSurface = null;
 		for(Surface s: this.surfaces){ // search for the closest hit
 			Hit currentHit = s.intersect(ray);
 			if(currentHit != null){
@@ -218,7 +218,7 @@ public class Scene {
 		}
 		if(this.renderReflections) {
 			// reflective implementation
-			if (closestHit.getSurface().reflectionIntensity() > 0) {
+			if (closestHit.getSurface().reflectionIntensity() > 0.0) {
 				Vec r_v = ray.direction().add(normal.mult(ray.direction().dot(normal)).mult(-2));
 				Ray ReflectiveRay = new Ray(hitPoint, r_v);
 				double K_R = closestHit.getSurface().reflectionIntensity();

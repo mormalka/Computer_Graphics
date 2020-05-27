@@ -1,5 +1,5 @@
 {
-  "name": "scene7",
+  "name": "scene8",
   "maxRecursionLevel": 6,
   "antiAliasingFactor": 1,
   "renderRefarctions": true,
@@ -38,9 +38,9 @@
     "z": 0.4
   },
   "backgroundColor": {
-    "x": 0.7,
+    "x": 0.0,
     "y": 0.5,
-    "z": 0.4
+    "z": 1.0
   },
   "lightSources": [
     {
@@ -72,21 +72,21 @@
       },
       "material": {
         "Ka": {
-          "x": 0.30322494169139874,
-          "y": 0.045749266819301915,
-          "z": 0.2556645141092708
+          "x": 0.2,
+          "y": 0.2,
+          "z": 0.2
         },
         "Kd": {
-          "x": 0.6064498833827975,
-          "y": 0.09149853363860383,
-          "z": 0.5113290282185416
+          "x": 0.4,
+          "y": 0.4,
+          "z": 0.4
         },
         "Ks": {
-          "x": 1.0,
-          "y": 1.0,
-          "z": 1.0
+          "x": 0.4,
+          "y": 0.4,
+          "z": 0.4
         },
-        "reflectionIntensity": 0.0,
+        "reflectionIntensity": 0.2,
         "shininess": 10,
         "isTransparent": false,
         "refractionIntensity": 0.3,
@@ -100,31 +100,31 @@
           "center": {
             "x": 1.0,
             "y": 0.0,
-            "z": 1.0
+            "z": -1.0
           },
-          "radius": 1.5
+          "radius": 0.8
         }
       },
       "material": {
         "Ka": {
-          "x": 0.1,
-          "y": 0.1,
-          "z": 0.1
+          "x": 0.4491321892521966,
+          "y": 0.08574249279183249,
+          "z": 0.23543731169698373
         },
         "Kd": {
-          "x": 0.1,
-          "y": 0.1,
-          "z": 0.1
+          "x": 0.8982643785043932,
+          "y": 0.17148498558366498,
+          "z": 0.47087462339396746
         },
         "Ks": {
-          "x": 0.1,
-          "y": 0.1,
-          "z": 0.1
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
         },
-        "reflectionIntensity": 0.8,
-        "shininess": 1,
-        "isTransparent": true,
-        "refractionIntensity": 0.2,
+        "reflectionIntensity": 0.0,
+        "shininess": 10,
+        "isTransparent": false,
+        "refractionIntensity": 0.3,
         "refractionIndex": 1.5
       }
     }
