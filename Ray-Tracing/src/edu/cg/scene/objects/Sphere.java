@@ -51,6 +51,7 @@ public class Sphere extends Shape {
 			return null; // t_1 <= t_2 so both are non positive
 		}
 		if (t_1 < Ops.epsilon){
+			if(t_2 > Ops.epsilon) return null;
 			normal = ray.add(t_2).sub(this.center).normalize();
 			return new Hit(t_2,normal);
 		}
