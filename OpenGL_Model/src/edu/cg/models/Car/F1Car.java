@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.jogamp.opengl.*;
 
+import edu.cg.algebra.Point;
+import edu.cg.algebra.Vec;
 import edu.cg.models.BoundingSphere;
 import edu.cg.models.IIntersectable;
 import edu.cg.models.IRenderable;
@@ -58,6 +60,13 @@ public class F1Car implements IRenderable, IIntersectable {
 		// All spheres should be adapted so that they are place relative to
 		// the car model coordinate system.
 		LinkedList<BoundingSphere> res = new LinkedList<BoundingSphere>();
+
+//		Point center_s1 = new Point(); // TODO
+//		double radius_s1 = new Vec(Specification.F_LENGTH / 2, Specification.F_HEIGHT / 2, Specification.F_DEPTH / 2).norm();
+//		BoundingSphere boundingSphere = new BoundingSphere(radius_s1, center_s1);
+//		boundingSphere.setSphereColore3d(0.8, 0, 0.2);
+//		res.add(boundingSphere);
+
 
 		return res;
 	}

@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.jogamp.opengl.GL2;
+import edu.cg.algebra.Point;
+import edu.cg.algebra.Vec;
 import edu.cg.models.BoundingSphere;
 import edu.cg.models.IIntersectable;
 import edu.cg.models.IRenderable;
@@ -47,12 +49,16 @@ public class Back implements IRenderable, IIntersectable {
 
 	@Override
 	public List<BoundingSphere> getBoundingSpheres() {
-		// TODO: Return a list of bounding spheres the list structure is as follow:
+		// Return a list of bounding spheres the list structure is as follow:
 		// s1
 		// where:
 		// s1 - sphere bounding the car front
 		LinkedList<BoundingSphere> res = new LinkedList<BoundingSphere>();
-
+		Point center = new Point(); // TODO
+		double radius = new Vec(Specification.B_LENGTH / 2, Specification.B_HEIGHT / 2, Specification.B_DEPTH / 2).norm();
+		BoundingSphere boundingSphere = new BoundingSphere(radius, center);
+		boundingSphere.setSphereColore3d(0, 0.7, 0.6);
+		res.add(boundingSphere);
 		return res;
 	}
 

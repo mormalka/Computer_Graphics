@@ -1,6 +1,8 @@
 package edu.cg.models.Car;
 
 import com.jogamp.opengl.GL2;
+import edu.cg.algebra.Point;
+import edu.cg.algebra.Vec;
 import edu.cg.models.BoundingSphere;
 import edu.cg.models.IIntersectable;
 import edu.cg.models.IRenderable;
@@ -13,7 +15,7 @@ public class Front implements IRenderable, IIntersectable {
 	private FrontHood hood = new FrontHood();
 	private PairOfWheels wheels = new PairOfWheels();
 
-	//new front bumber feature
+	//new front bumper feature
 	private FrontBumber frontBumber = new FrontBumber();
 
 
@@ -33,13 +35,10 @@ public class Front implements IRenderable, IIntersectable {
 
 		// Render front bumber
 		gl.glTranslated(0.16875, -0.0375, 0.0); //TODO
-		//gl.glTranslated(2.0*Specification.TIRE_RADIUS, 0,0);
+//		gl.glTranslated(Specification.TIRE_RADIUS, 0,0);
 		frontBumber.render(gl);
 
 		gl.glPopMatrix();
-
-
-
 
 	}
 
@@ -49,12 +48,14 @@ public class Front implements IRenderable, IIntersectable {
 
 	@Override
 	public List<BoundingSphere> getBoundingSpheres() {
-		// TODO: Return a list of bounding spheres the list structure is as follow:
-		// s1
 		// where:
 		// s1 - sphere bounding the car front
 		LinkedList<BoundingSphere> res = new LinkedList<BoundingSphere>();
-
+		Point center = new Point(); // TODO
+		double radius = new Vec(Specification.F_LENGTH / 2, Specification.F_HEIGHT / 2, Specification.F_DEPTH / 2).norm();
+		BoundingSphere boundingSphere = new BoundingSphere(radius, center);
+		boundingSphere.setSphereColore3d(0.8, 0, 0.2);
+		res.add(boundingSphere);
 		return res;
 	}
 

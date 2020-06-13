@@ -2,7 +2,11 @@ package edu.cg.models;
 
 import com.jogamp.opengl.GL2;
 
+import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.glu.GLUquadric;
 import edu.cg.algebra.Point;
+import edu.cg.algebra.Vec;
+import edu.cg.models.Car.Specification;
 
 public class BoundingSphere implements IRenderable {
 	private double radius = 0.0;
@@ -27,18 +31,31 @@ public class BoundingSphere implements IRenderable {
 	 * @return true if the spheres intersects, and false otherwise
 	 */
 	public boolean checkIntersection(BoundingSphere s) {
-		// TODO: Check if two spheres intersect.
-		return false;
+		double dis_between_centers = this.center.dist(s.center);
+		return (dis_between_centers <= (this.radius + s.radius));
 	}
 
 	public void translateCenter(double dx, double dy, double dz) {
-		// TODO: Translate the sphere center by (dx,dy,dz).
+		Point translate_by = new Point(dx, dy, dz);
+		this.center = this.center.add(translate_by);
 	}
 
 	@Override
 	public void render(GL2 gl) {
-		// TODO: Render a sphere with the given radius and center.
 		// NOTE : Use the specified color when rendering.
+
+		gl.glPushMatrix(); //remember origin position
+		// Initialize quad
+		GLU glu = new GLU();
+		GLUquadric quad = glu.gluNewQuadric();
+		gl.glColor3d(this.color[0], this.color[1], this.color[2]);
+		gl.glTranslated(this.center.x, this.center.y, this.center.z);
+		int stacks = 10; // TODO
+		int slices = 10; // TODO : ask how many
+		glu.gluSphere(quad, this.radius, slices, stacks);
+
+		gl.glPopMatrix(); //return to origin
+		glu.gluDeleteQuadric(quad); //Clear from memory
 	}
 
 	@Override

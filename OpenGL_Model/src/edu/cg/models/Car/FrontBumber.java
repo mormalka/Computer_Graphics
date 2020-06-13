@@ -30,7 +30,7 @@ public class FrontBumber implements IRenderable {
 		Double depth = Specification.F_BUMPER_WINGS_DEPTH / 2 + Specification.F_BUMPER_DEPTH / 2;
 		gl.glTranslated(0,0,depth);
 		gl.glPushMatrix(); // remember the first wing position
-		this.f_b_wing  = createWing(gl,glu,quad);
+		this.f_b_wing  = createWing(gl);
 		this.f_b_wing.render(gl);
 
 		//Draw sphere
@@ -40,7 +40,7 @@ public class FrontBumber implements IRenderable {
 		//Draw second wing
 		gl.glTranslated(0,0,-2*depth);
 		gl.glPushMatrix();// remember the second wing position
-		this.f_b_wing  = createWing(gl,glu,quad);
+		Materials.SetBlackMetalMaterial(gl); // return to wing's color
 		this.f_b_wing.render(gl);
 
 		//Draw sphere
@@ -70,7 +70,7 @@ public class FrontBumber implements IRenderable {
 
 		return new SkewedBox(length,h1,h2,depth,depth);
 	}
-	private SkewedBox createWing(GL2 gl, GLU glu, GLUquadric quad){
+	private SkewedBox createWing(GL2 gl){
 		Materials.SetBlackMetalMaterial(gl);
 		double h1 = Specification.F_BUMPER_WINGS_HEIGHT_1;
 		double h2 = Specification.F_BUMPER_WINGS_HEIGHT_2;
