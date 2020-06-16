@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.glu.GLUquadric;
 import edu.cg.algebra.Point;
 import edu.cg.algebra.Vec;
 import edu.cg.models.BoundingSphere;
@@ -40,6 +42,24 @@ public class Back implements IRenderable, IIntersectable {
 				0.5 * (Specification.B_HEIGHT_1 + Specification.B_HEIGHT_2), 0.0);
 		spoiler.render(gl);
 		gl.glPopMatrix();
+
+		// Add exhaust pipes
+		// first exhaust pipes
+		Materials.SetDarkRedMetalMaterial(gl);
+		GLU glu = new GLU();
+		GLUquadric quad = glu.gluNewQuadric();
+		gl.glPushMatrix();
+		gl.glTranslated(-Specification.B_LENGTH / 2.0 -Specification.S_ROD_RADIUS, 0.02, Specification.S_ROD_RADIUS+Specification.S_RODS_DISTANCE/2.0);
+		gl.glRotated(90.0, 0.0, 2.0, 0.0);
+		glu.gluCylinder(quad, Specification.S_ROD_RADIUS, Specification.S_ROD_RADIUS, Specification.S_ROD_HIEGHT, 8, 2);
+		gl.glPopMatrix();
+		// second exhaust pipe
+		gl.glPushMatrix();
+		gl.glTranslated(-Specification.B_LENGTH / 2.0 -Specification.S_ROD_RADIUS, 0.02, Specification.S_ROD_RADIUS+Specification.S_RODS_DISTANCE/2.0 - Specification.S_ROD_RADIUS*2.0);
+		gl.glRotated(90.0, 0.0, 2.0, 0.0);
+		glu.gluCylinder(quad, Specification.S_ROD_RADIUS, Specification.S_ROD_RADIUS, Specification.S_ROD_HIEGHT, 8, 2);
+		gl.glPopMatrix();
+		glu.gluDeleteQuadric(quad); //Clear from memory
 	}
 
 	@Override

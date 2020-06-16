@@ -50,7 +50,7 @@ public class Front implements IRenderable, IIntersectable {
 		Point center = new Point(0, Specification.F_HEIGHT / 2, 0);
 		double radius = new Vec(Specification.F_LENGTH / 2, Specification.F_HEIGHT / 2, Specification.F_DEPTH / 2).norm();
 		BoundingSphere boundingSphere = new BoundingSphere(radius, center);
-		boundingSphere.setSphereColore3d(0.8, 0, 0.2);
+		boundingSphere.setSphereColore3d(0.8, 0, 0.4);
 		res.add(boundingSphere);
 		return res;
 	}
