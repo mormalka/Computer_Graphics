@@ -50,8 +50,8 @@ public class BoundingSphere implements IRenderable {
 		GLUquadric quad = glu.gluNewQuadric();
 		gl.glColor3d(this.color[0], this.color[1], this.color[2]);
 		gl.glTranslated(this.center.x, this.center.y, this.center.z);
-		int stacks = 10; // TODO
-		int slices = 10; // TODO : ask how many
+		int stacks = 10;
+		int slices = 10;
 		glu.gluSphere(quad, this.radius, slices, stacks);
 
 		gl.glPopMatrix(); //return to origin

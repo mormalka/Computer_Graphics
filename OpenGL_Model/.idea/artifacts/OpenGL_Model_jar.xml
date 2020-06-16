@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="OpenGL_Model:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/OpenGL_Model_jar</output-path>
+    <root id="archive" name="OpenGL_Model.jar">
+      <element id="module-output" name="OpenGL_Model" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/jogl/jar/jogl-all.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/jogl/jar/gluegen-rt.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

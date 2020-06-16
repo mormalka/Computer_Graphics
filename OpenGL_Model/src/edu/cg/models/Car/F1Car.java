@@ -16,7 +16,6 @@ import edu.cg.models.IRenderable;
  *
  */
 public class F1Car implements IRenderable, IIntersectable {
-	// TODO : Add new design features to the car.
 	// Remember to include a ReadMe file specifying what you implemented.
 	Center carCenter = new Center();
 	Back carBack = new Back();
@@ -63,7 +62,6 @@ public class F1Car implements IRenderable, IIntersectable {
 
 		// s1 - sphere bounding the whole car
 		Point center_s1 = new Point(0, Specification.B_HEIGHT / 2.0, 0);
-//		double radius_s1 = new Vec(Specification.F_LENGTH / 2, Specification.F_HEIGHT / 2, Specification.F_DEPTH / 2).norm();
 		double center_to_front = center_s1.dist(new Point(Specification.F_LENGTH + Specification.F_BUMPER_LENGTH, 0.0, 0.0));
 		double center_to_back = center_s1.dist(new Point(Specification.B_LENGTH + Specification.S_LENGTH, 0.0, 0.0));
 		double radius_s1 = Math.max(center_to_front, center_to_back); // TODO : ours 0.7666, t : 0.75208
