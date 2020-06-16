@@ -72,7 +72,7 @@ public class Center implements IRenderable, IIntersectable {
 		// where:
 		// s1 - sphere bounding the car front
 		LinkedList<BoundingSphere> res = new LinkedList<BoundingSphere>();
-		Point center = new Point(); // TODO
+		Point center = new Point(0, Specification.C_HIEGHT / 2.0, 0.0);
 		double radius = new Vec(Specification.C_LENGTH / 2, Specification.C_HIEGHT / 2, Specification.C_DEPTH / 2).norm();
 		BoundingSphere boundingSphere = new BoundingSphere(radius, center);
 		boundingSphere.setSphereColore3d(0, 0, 0.5);

@@ -61,12 +61,40 @@ public class F1Car implements IRenderable, IIntersectable {
 		// the car model coordinate system.
 		LinkedList<BoundingSphere> res = new LinkedList<BoundingSphere>();
 
-//		Point center_s1 = new Point(); // TODO
+		// s1 - sphere bounding the whole car
+		Point center_s1 = new Point(0, Specification.B_HEIGHT / 2.0, 0);
 //		double radius_s1 = new Vec(Specification.F_LENGTH / 2, Specification.F_HEIGHT / 2, Specification.F_DEPTH / 2).norm();
-//		BoundingSphere boundingSphere = new BoundingSphere(radius_s1, center_s1);
-//		boundingSphere.setSphereColore3d(0.8, 0, 0.2);
-//		res.add(boundingSphere);
+		double center_to_front = center_s1.dist(new Point(Specification.F_LENGTH + Specification.F_BUMPER_LENGTH, 0.0, 0.0));
+		double center_to_back = center_s1.dist(new Point(Specification.B_LENGTH + Specification.S_LENGTH, 0.0, 0.0));
+		double radius_s1 = Math.max(center_to_front, center_to_back); // TODO : ours 0.7666, t : 0.75208
+		BoundingSphere boundingSphere = new BoundingSphere(radius_s1, center_s1);
+		boundingSphere.setSphereColore3d(0.0, 0.0, 0.0);
+		res.add(boundingSphere);
 
+		// s2 - sphere bounding the car front
+		List<BoundingSphere> front_bounding_spheres = carFront.getBoundingSpheres();
+		double translate_front_x = Specification.F_LENGTH / 2.0 + Specification.C_BASE_LENGTH / 2.0;
+		// translate relative to the car model coordinate system
+		for(BoundingSphere current_bs: front_bounding_spheres){
+			current_bs.translateCenter(translate_front_x, 0.0, 0.0);
+			res.add(current_bs);
+		}
+
+		// s3 - sphere bounding the car center
+		List<BoundingSphere> center_bounding_spheres = carCenter.getBoundingSpheres();
+		for(BoundingSphere current_bs: center_bounding_spheres){
+			// no need to translate, already relative to the car model coordinate system
+			res.add(current_bs);
+		}
+
+		// s4 - sphere bounding the car back
+		List<BoundingSphere> back_bounding_spheres = carBack.getBoundingSpheres();
+		double translate_back_x = -Specification.B_LENGTH / 2.0 - Specification.C_BASE_LENGTH / 2.0;
+		// translate relative to the car model coordinate system
+		for(BoundingSphere current_bs: back_bounding_spheres){
+			current_bs.translateCenter(translate_back_x, 0.0, 0.0);
+			res.add(current_bs);
+		}
 
 		return res;
 	}

@@ -82,9 +82,9 @@ public class FrontBumber implements IRenderable {
 
 	private void renderSphere(GL2 gl, GLU glu, GLUquadric quad) {
 		gl.glColor3d(1, 0, 0);
-		double sphere_point = Specification.F_BUMPER_WINGS_DEPTH / 2;
-		gl.glTranslated(0.0, 0.03937500000000001, 0.0); //TODO
-		glu.gluSphere(quad, 0.03200000000000001, 25, 25); //TODO
+		double sphere_radius = Specification.F_BUMPER_WINGS_DEPTH / 2.5;
+		gl.glTranslated(0.0, Specification.F_BUMPER_WINGS_DEPTH / 2.0, 0.0);
+		glu.gluSphere(quad, sphere_radius, 12, 12); //TODO Stacks slices
 	}
 }
 

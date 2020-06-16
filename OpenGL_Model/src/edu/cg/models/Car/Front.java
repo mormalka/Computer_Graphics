@@ -11,7 +11,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Front implements IRenderable, IIntersectable {
-	// TODO: Add necessary fields (e.g. the bumper).
 	private FrontHood hood = new FrontHood();
 	private PairOfWheels wheels = new PairOfWheels();
 
@@ -21,8 +20,6 @@ public class Front implements IRenderable, IIntersectable {
 
 	@Override
 	public void render(GL2 gl) {
-		// TODO: Render the BUMPER. Look at how we place the front and the wheels of
-		// the car.
 		gl.glPushMatrix();
 		// Render hood - Use Red Material.
 		gl.glTranslated(-Specification.F_LENGTH / 2.0 + Specification.F_HOOD_LENGTH / 2.0, 0.0, 0.0);
@@ -34,8 +31,7 @@ public class Front implements IRenderable, IIntersectable {
 		wheels.render(gl);
 
 		// Render front bumber
-		gl.glTranslated(0.16875, -0.0375, 0.0); //TODO
-//		gl.glTranslated(Specification.TIRE_RADIUS, 0,0);
+		gl.glTranslated(1.25*Specification.TIRE_RADIUS + Specification.F_BUMPER_LENGTH / 2.0, -0.5*Specification.TIRE_RADIUS, 0.0);
 		frontBumber.render(gl);
 
 		gl.glPopMatrix();
@@ -51,7 +47,7 @@ public class Front implements IRenderable, IIntersectable {
 		// where:
 		// s1 - sphere bounding the car front
 		LinkedList<BoundingSphere> res = new LinkedList<BoundingSphere>();
-		Point center = new Point(); // TODO
+		Point center = new Point(0, Specification.F_HEIGHT / 2, 0);
 		double radius = new Vec(Specification.F_LENGTH / 2, Specification.F_HEIGHT / 2, Specification.F_DEPTH / 2).norm();
 		BoundingSphere boundingSphere = new BoundingSphere(radius, center);
 		boundingSphere.setSphereColore3d(0.8, 0, 0.2);
