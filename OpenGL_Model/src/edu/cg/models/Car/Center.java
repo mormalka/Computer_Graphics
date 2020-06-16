@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.jogamp.opengl.GL2;
 
+import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.glu.GLUquadric;
 import edu.cg.algebra.Point;
 import edu.cg.algebra.Vec;
 import edu.cg.models.BoundingSphere;
@@ -58,6 +60,48 @@ public class Center implements IRenderable, IIntersectable {
 				Specification.C_BASE_HEIGHT, 0.0);
 		backBox.render(gl);
 		gl.glPopMatrix();
+
+		//Add designing
+		//right mirror
+		GLU glu = new GLU();
+		gl.glColor3d(0.66, 0.66, 0.66);
+		GLUquadric quad = glu.gluNewQuadric();
+		gl.glPushMatrix();
+		gl.glTranslated(Specification.C_BASE_LENGTH / 2.0, Specification.C_HIEGHT / 2.0, Specification.C_DEPTH / 2.0);
+		gl.glRotated(90.0, 0.0, 0.0, 1.0);
+		glu.gluCylinder(quad, Specification.S_ROD_RADIUS, Specification.S_ROD_RADIUS, Specification.S_ROD_HIEGHT, 8, 2);
+		gl.glPopMatrix();
+
+		gl.glPushMatrix();
+		gl.glTranslated(Specification.C_BASE_LENGTH / 2.0, Specification.C_HIEGHT / 2.0 -0.5*Specification.S_ROD_RADIUS, Specification.C_DEPTH / 2.0 + 1.5*Specification.S_ROD_HIEGHT);
+		gl.glRotated(-90.0, -1.0, 3.0, -1.0);
+		double h1 = Specification.F_BUMPER_HEIGHT_1 / 2.0;
+		double h2 = Specification.F_BUMPER_HEIGHT_1 / 2.0;
+		double length = Specification.S_ROD_HIEGHT;
+		double depth = Specification.S_RODS_SIZE / 2.0;
+
+		new SkewedBox(length,h1,h2,depth,depth).render(gl);
+		gl.glPopMatrix();
+
+		//left mirror
+		gl.glPushMatrix();
+		gl.glTranslated(Specification.C_BASE_LENGTH / 2.0, Specification.C_HIEGHT / 2.0, -Specification.C_DEPTH / 2.0 -Specification.S_ROD_HIEGHT);
+		gl.glRotated(90.0, 0.0, 0.0, 1.0);
+		glu.gluCylinder(quad, Specification.S_ROD_RADIUS, Specification.S_ROD_RADIUS, Specification.S_ROD_HIEGHT, 8, 2);
+		gl.glPopMatrix();
+
+		gl.glPushMatrix();
+		gl.glTranslated(Specification.C_BASE_LENGTH / 2.0, Specification.C_HIEGHT / 2.0 -0.5*Specification.S_ROD_RADIUS, -Specification.C_DEPTH / 2.0 - 1.5*Specification.S_ROD_HIEGHT);
+		gl.glRotated(-90.0, -1.0, 3.0, -1.0);
+		h1 = Specification.F_BUMPER_HEIGHT_1 / 2.0;
+		h2 = Specification.F_BUMPER_HEIGHT_1 / 2.0;
+		length = Specification.S_ROD_HIEGHT;
+		depth = Specification.S_RODS_SIZE / 2.0;
+
+		new SkewedBox(length,h1,h2,depth,depth).render(gl);
+		gl.glPopMatrix();
+
+		glu.gluDeleteQuadric(quad); //Clear from memory
 	}
 
 	@Override
