@@ -49,7 +49,6 @@ public class FrontBumber implements IRenderable {
 
 		gl.glPopMatrix(); //return to origin
 		glu.gluDeleteQuadric(quad); //Clear from memory
-
 	}
 
 	@Override
