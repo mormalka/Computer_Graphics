@@ -11,6 +11,7 @@ import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.FPSAnimator;
 
+import edu.cg.algebra.Point;
 import edu.cg.algebra.Vec;
 import edu.cg.models.BoundingSphere;
 import edu.cg.models.Track;
@@ -41,6 +42,9 @@ public class NeedForSpeed implements GLEventListener {
 	// - Different camera settings
 	// - Light colors
 	// Or in short anything reusable - this make it easier for your to keep track of your implementation.
+	private Point carInitialPos;
+	private Point birdInitialPos;
+	private Point personInitialPos;
 	
 	public NeedForSpeed(Component glPanel) {
 		this.glPanel = glPanel;
@@ -48,6 +52,11 @@ public class NeedForSpeed implements GLEventListener {
 		gameTrack = new Track();
 		carCameraTranslation = new Vec(0.0);
 		car = new F1Car();
+		// initial new fields
+//		this.carInitialPos = new Point(0.0, 0.0, 0.0);
+		this.carInitialPos = new Point( 0.0, 4.0 * 0.075, 4.0 * -0.65 - 2.0); // TODO
+//		this.birdInitialPos = new Point(0.0, 2.0, 0.0);
+		this.personInitialPos = new Point(0.0, 2.0, carInitialPos.z + 4.0 + 4.0 * 0.65); // TODO
 	}
 
 	@Override
@@ -57,10 +66,9 @@ public class NeedForSpeed implements GLEventListener {
 			initModel(gl);
 		}
 		if (isDayMode) {
-			// TODO: Setup background when day mode is on
-			// use gl.glClearColor() function.
+			gl.glClearColor(0.5f,0.7f, 1.0f ,1.0f);
 		} else {
-			// TODO: Setup background when night mode is on
+			gl.glClearColor(0.3f, 0.3f, 0.4f, 1.0f);
 		}
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
@@ -115,10 +123,18 @@ public class NeedForSpeed implements GLEventListener {
 		// TODO: You are advised to use :
 		//       GLU glu = new GLU();
 		//       glu.gluLookAt();
+		GLU glu = new GLU();
 		if (isBirdseyeView) {
 			// TODO Setup camera for Birds-eye view
+			// TODO: 50 meters above, looking down y direction, up vec z direction
 		} else {
-			// TODO Setup camera for Third-person view
+			// TODO: 4 meters beind, 2 above, looking at z
+//			glu.gluLookAt(0.0, 2.0, 0.0,
+//						0.0, 2.0, -1.0,
+//						0.0, 1.0, 0.0);
+			glu.gluLookAt(this.personInitialPos.x + this.carCameraTranslation.x, this.personInitialPos.y + this.carCameraTranslation.y, this.personInitialPos.z + this.carCameraTranslation.z,
+					this.personInitialPos.x + this.carCameraTranslation.x, this.personInitialPos.y + this.carCameraTranslation.y, this.personInitialPos.z + this.carCameraTranslation.z - 10.0,
+						0.0, 1.0, 0.0);
 		}
 
 	}
@@ -127,6 +143,14 @@ public class NeedForSpeed implements GLEventListener {
 		if (isDayMode) {
 			// TODO Setup day lighting.
 			// * Remember: switch-off any light sources that were used in night mode and are not use in day mode.
+			float[] sunIntensity = {1.f, 1.f, 1.f, 1.f};
+			gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, sunIntensity, 0);
+			gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, sunIntensity, 0);
+			float[] sunDirection = {0.f, 1.f, 1.f, 0.f};
+			gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, sunDirection, 0);
+			gl.glEnable(GL2.GL_LIGHT0);
+
+
 		} else {
 			// TODO Setup night lighting.
 			// * Remember: switch-off any light sources that are used in day mode
@@ -149,6 +173,15 @@ public class NeedForSpeed implements GLEventListener {
 		//             This will simulate the car movement.
 		// * Remember: the car was modeled locally, you may need to rotate/scale and translate the car appropriately.
 		// * Recommendation: it is recommended to define fields (such as car initial position) that can be used during rendering.
+		gl.glPushMatrix();
+		gl.glTranslated(this.carInitialPos.x + this.carCameraTranslation.x, this.carInitialPos.y + this.carCameraTranslation.y, this.carInitialPos.z + this.carCameraTranslation.z);
+		double nextRotation = this.gameState.getCarRotation();
+		gl.glRotated(90 - nextRotation, 0.0, 1.0, 0.0);
+		// scale
+		gl.glScaled(4.0, 4.0, 4.0); // TODO
+
+		this.car.render(gl);
+		gl.glPopMatrix();
 	}
 
 	public GameState getGameState() {
@@ -188,7 +221,12 @@ public class NeedForSpeed implements GLEventListener {
 
 	@Override
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-		// TODO Setup the projection matrix here.
+		GL2 gl = drawable.getGL().getGL2();
+		gl.glMatrixMode(GL2.GL_PROJECTION);
+		gl.glLoadIdentity();
+		GLU glu = new GLU();
+		double ratio = (double)(width)/height;
+		glu.gluPerspective(60, ratio, 2, 500);
 	}
 
 	/**
