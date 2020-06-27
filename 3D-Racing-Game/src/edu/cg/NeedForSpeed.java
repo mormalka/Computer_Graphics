@@ -45,6 +45,7 @@ public class NeedForSpeed implements GLEventListener {
 	private Point carInitialPos;
 	private Point birdInitialPos;
 	private Point personInitialPos;
+	private double scale;
 	
 	public NeedForSpeed(Component glPanel) {
 		this.glPanel = glPanel;
@@ -54,8 +55,10 @@ public class NeedForSpeed implements GLEventListener {
 		car = new F1Car();
 		// initial new fields
 //		this.carInitialPos = new Point(0.0, 0.0, 0.0);
-		this.carInitialPos = new Point( 0.0, 4.0 * 0.075, 4.0 * -0.65 - 2.0); // TODO
-//		this.birdInitialPos = new Point(0.0, 2.0, 0.0);
+		this.scale = 5.0; // TODO
+		this.carInitialPos = new Point( 0.0, this.scale * 0.075, 4.0 * -0.65 - 2.0); // TODO
+		double totalCarLength = Specification.F_LENGTH + Specification.C_LENGTH + Specification.B_LENGTH + Specification.F_BUMPER_LENGTH;
+		this.birdInitialPos = new Point(0.0, 50.0, this.carInitialPos .z - 22.0 - totalCarLength); //todo
 		this.personInitialPos = new Point(0.0, 2.0, carInitialPos.z + 4.0 + 4.0 * 0.65); // TODO
 	}
 
@@ -99,8 +102,20 @@ public class NeedForSpeed implements GLEventListener {
 	 */
 	private boolean checkCollision() {
 		// TODO: Implement this function to check if the car collides into one of the boxes.
-		// You can get the bounding spheres of the track by invoking: 
-		// List<BoundingSphere> trackBoundingSpheres = gameTrack.getBoundingSpheres();
+		// You can get the bounding spheres of the track by invoking:
+
+		 List<BoundingSphere> trackBoundingSpheres = gameTrack.getBoundingSpheres();
+		 List<BoundingSphere> carBoundingSpheres = car.getBoundingSpheres();
+		 for(BoundingSphere box : trackBoundingSpheres){
+		 	if(box.checkIntersection(carBoundingSpheres.get(0))){
+				for (BoundingSphere carBoundingSphere : carBoundingSpheres){
+					if(carBoundingSphere.checkIntersection(box) && (carBoundingSpheres.indexOf(carBoundingSphere) != 0)) return true;
+				}
+			}
+		 }
+
+
+
 		return false;
 	}
 
@@ -127,13 +142,16 @@ public class NeedForSpeed implements GLEventListener {
 		if (isBirdseyeView) {
 			// TODO Setup camera for Birds-eye view
 			// TODO: 50 meters above, looking down y direction, up vec z direction
+			glu.gluLookAt(this.birdInitialPos.x + this.carCameraTranslation.x, this.birdInitialPos.y + this.carCameraTranslation.y, this.birdInitialPos.z + this.carCameraTranslation.z,
+					this.birdInitialPos.x + this.carCameraTranslation.x, this.birdInitialPos.y + this.carCameraTranslation.y - 1.0, this.birdInitialPos.z + this.carCameraTranslation.z,
+					0.0, 0.0, -1.0);
 		} else {
 			// TODO: 4 meters beind, 2 above, looking at z
 //			glu.gluLookAt(0.0, 2.0, 0.0,
 //						0.0, 2.0, -1.0,
 //						0.0, 1.0, 0.0);
 			glu.gluLookAt(this.personInitialPos.x + this.carCameraTranslation.x, this.personInitialPos.y + this.carCameraTranslation.y, this.personInitialPos.z + this.carCameraTranslation.z,
-					this.personInitialPos.x + this.carCameraTranslation.x, this.personInitialPos.y + this.carCameraTranslation.y, this.personInitialPos.z + this.carCameraTranslation.z - 10.0,
+					this.personInitialPos.x + this.carCameraTranslation.x, this.personInitialPos.y + this.carCameraTranslation.y, this.personInitialPos.z + this.carCameraTranslation.z - 1.0,
 						0.0, 1.0, 0.0);
 		}
 
@@ -178,7 +196,7 @@ public class NeedForSpeed implements GLEventListener {
 		double nextRotation = this.gameState.getCarRotation();
 		gl.glRotated(90 - nextRotation, 0.0, 1.0, 0.0);
 		// scale
-		gl.glScaled(4.0, 4.0, 4.0); // TODO
+		gl.glScaled(this.scale, this.scale, this.scale);
 
 		this.car.render(gl);
 		gl.glPopMatrix();
