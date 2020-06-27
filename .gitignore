@@ -1,4 +1,6 @@
 OpenGL_Model/natives/**
 OpenGL_Model/jogl/**
 OpenGL_Model/out/**
-OpenGL_Model/Texturesout/**
+3D-Racing-Game/Texturesout/**
+3D-Racing-Game/jogl/**
+3D-Racing-Game/out/**
