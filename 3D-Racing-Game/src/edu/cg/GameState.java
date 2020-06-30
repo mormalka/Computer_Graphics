@@ -100,7 +100,6 @@ public class GameState {
 	}
 
 	/**
-	 * TODO: Use this method to move the car, camera and positional light sources (on night mode) between frames.
 	 * 
 	 * The method returns the offset by which the car moved, relative to the last time this method was invoked.
 	 * So if the method was invoked at t1 and t2. And assume that car position at t1 is p.x, p.y and p.z. So the new 
