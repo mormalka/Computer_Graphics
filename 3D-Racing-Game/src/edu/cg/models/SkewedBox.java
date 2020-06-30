@@ -9,9 +9,6 @@ import com.jogamp.opengl.util.texture.TextureIO;
 import edu.cg.algebra.Vec;
 
 public class SkewedBox implements IRenderable {
-	// TODO: Add you implementation from previous exercise.
-	//       * Note you may want to enable textures here to render
-	//         the wooden boxes.
 	private double length, height1, height2, depth1, depth2;
 	private Texture texBox = null;
 	private boolean useTexture = false;

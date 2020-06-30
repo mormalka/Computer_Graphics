@@ -14,7 +14,6 @@ import edu.cg.algebra.Point;
 import edu.cg.models.Car.Materials;
 
 public class TrackSegment implements IRenderable, IIntersectable {
-	// TODO: Some constants you can use
 	public final static double ASPHALT_TEXTURE_WIDTH = 20.0;
 	public final static double ASPHALT_TEXTURE_DEPTH = 10.0;
 	public final static double GRASS_TEXTURE_WIDTH = 10.0;

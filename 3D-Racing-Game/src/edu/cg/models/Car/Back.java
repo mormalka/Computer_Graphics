@@ -45,7 +45,7 @@ public class Back implements IRenderable, IIntersectable {
 
 		// Add exhaust pipes
 		// first exhaust pipes
-		Materials.SetDarkRedMetalMaterial(gl);
+		Materials.SetDarkGreyMetalMaterial(gl);
 		GLU glu = new GLU();
 		GLUquadric quad = glu.gluNewQuadric();
 		gl.glPushMatrix();

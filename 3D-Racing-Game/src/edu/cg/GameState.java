@@ -6,7 +6,6 @@ import java.util.TimerTask;
 
 import edu.cg.algebra.Vec;
 /**
- * TODO Use getCarRotation and getNextTranslation
  * This class is already implemented. Use it to track the car movement when the user interacts with the game.
  * @author MOAB
  *
@@ -70,8 +69,7 @@ public class GameState {
 	}
 
 	/**
-	 * TODO Use this method to orient the car properly in the scene.
-	 * 
+	 *
 	 * @return The rotation of the car about its axis. The rotation value
 	 * 		   depends on the steering state (RIGHT, LEFT or Straight).
 	 */

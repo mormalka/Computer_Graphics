@@ -64,7 +64,7 @@ public class Center implements IRenderable, IIntersectable {
 		//Add designing
 		//right mirror
 		GLU glu = new GLU();
-		gl.glColor3d(0.66, 0.66, 0.66);
+		Materials.SetDarkGreyMetalMaterial(gl);
 		GLUquadric quad = glu.gluNewQuadric();
 		gl.glPushMatrix();
 		gl.glTranslated(Specification.C_BASE_LENGTH / 2.0, Specification.C_HIEGHT / 2.0, Specification.C_DEPTH / 2.0);
